@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import os
 from . import views
 
 router = routers.DefaultRouter()
@@ -25,9 +28,31 @@ router.register(r'activities', views.ActivityViewSet, basename='activity')
 router.register(r'leaderboard', views.LeaderboardViewSet, basename='leaderboardentry')
 router.register(r'workouts', views.WorkoutViewSet, basename='workout')
 
+
+# API root that uses the CODESPACE_NAME env var when available to construct absolute URLs
+@api_view(['GET'])
+def codespace_api_root(request, format=None):
+    codespace = os.environ.get('CODESPACE_NAME')
+    if codespace:
+        base = f"https://{codespace}-8000.app.github.dev"
+    else:
+        # fallback to request host
+        scheme = 'https' if request.is_secure() else 'http'
+        base = f"{scheme}://{request.get_host()}"
+
+    return Response(
+        {
+            'users': f"{base}/api/users/",
+            'teams': f"{base}/api/teams/",
+            'activities': f"{base}/api/activities/",
+            'leaderboard': f"{base}/api/leaderboard/",
+            'workouts': f"{base}/api/workouts/",
+        }
+    )
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.api_root, name='api-root'),
+    path('', codespace_api_root, name='api-root'),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
