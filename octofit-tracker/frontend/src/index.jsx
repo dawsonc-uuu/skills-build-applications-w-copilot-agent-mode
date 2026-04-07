@@ -1,7 +1,7 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import App from './App'
+import App from './App.jsx'
 import './App.css'
 
 // Expose the Codespace name in console for debugging (Vite env)
