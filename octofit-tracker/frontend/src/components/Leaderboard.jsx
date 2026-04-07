@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
 function buildBase() {
-  const cs = process.env.REACT_APP_CODESPACE_NAME
+  const cs = import.meta.env.VITE_CODESPACE_NAME
   if (cs) return `https://${cs}-8000.app.github.dev`
   return 'http://localhost:8000'
 }
 
-export default function Workouts() {
+export default function Leaderboard() {
   const [items, setItems] = useState([])
 
   const fetchData = async () => {
     const base = buildBase()
-    const url = `${base}/api/workouts/`
-    console.log('Fetching Workouts from', url)
+    const url = `${base}/api/leaderboard/`
+    console.log('Fetching Leaderboard from', url)
     try {
       const r = await fetch(url)
       const data = await r.json()
-      console.log('Workouts response', data)
+      console.log('Leaderboard response', data)
       const list = Array.isArray(data) ? data : data.results || []
       setItems(list)
     } catch (err) {
-      console.error('Workouts fetch error', err)
+      console.error('Leaderboard fetch error', err)
     }
   }
 
@@ -29,7 +29,7 @@ export default function Workouts() {
   return (
     <div className="container py-4 app-container">
       <div className="app-header d-flex align-items-center">
-        <h2 className="me-3">Workouts</h2>
+        <h2 className="me-3">Leaderboard</h2>
         <button className="btn btn-primary btn-sm refresh-btn" onClick={fetchData}>Refresh</button>
       </div>
 
@@ -40,19 +40,21 @@ export default function Workouts() {
               <tr>
                 <th>ID</th>
                 <th>User</th>
-                <th>Title</th>
-                <th>Duration</th>
-                <th>Date</th>
+                <th>Team</th>
+                <th>Score</th>
+                <th>Rank</th>
+                <th>Updated</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((w) => (
-                <tr key={w.id}>
-                  <td>{w.id}</td>
-                  <td>{w.user || w.user_id || '-'}</td>
-                  <td>{w.title}</td>
-                  <td>{w.duration_minutes || '-'}</td>
-                  <td>{w.date || '-'}</td>
+              {items.map((e) => (
+                <tr key={e.id}>
+                  <td>{e.id}</td>
+                  <td>{(e.user && (e.user.name || e.user)) || e.user_id || '-'}</td>
+                  <td>{(e.team && (e.team.name || e.team)) || '-'}</td>
+                  <td>{e.score}</td>
+                  <td>{e.rank || '-'}</td>
+                  <td>{e.timestamp || '-'}</td>
                 </tr>
               ))}
             </tbody>

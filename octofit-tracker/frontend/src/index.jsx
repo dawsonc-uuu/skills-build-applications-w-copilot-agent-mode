@@ -4,9 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App'
 import './App.css'
 
-// Expose the Codespace name in console for debugging
-const codespace = process.env.REACT_APP_CODESPACE_NAME || null
-console.log('REACT_APP_CODESPACE_NAME:', codespace)
+// Expose the Codespace name in console for debugging (Vite env)
+const codespace = import.meta.env.VITE_CODESPACE_NAME || null
+console.log('VITE_CODESPACE_NAME:', codespace)
 
 const root = createRoot(document.getElementById('root'))
 root.render(

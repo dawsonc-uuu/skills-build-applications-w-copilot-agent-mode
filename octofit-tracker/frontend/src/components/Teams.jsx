@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
 function buildBase() {
-  const cs = process.env.REACT_APP_CODESPACE_NAME
+  const cs = import.meta.env.VITE_CODESPACE_NAME
   if (cs) return `https://${cs}-8000.app.github.dev`
   return 'http://localhost:8000'
 }
 
-export default function Users() {
+export default function Teams() {
   const [items, setItems] = useState([])
 
   const fetchData = async () => {
     const base = buildBase()
-    const url = `${base}/api/users/`
-    console.log('Fetching Users from', url)
+    const url = `${base}/api/teams/`
+    console.log('Fetching Teams from', url)
     try {
       const r = await fetch(url)
       const data = await r.json()
-      console.log('Users response', data)
+      console.log('Teams response', data)
       const list = Array.isArray(data) ? data : data.results || []
       setItems(list)
     } catch (err) {
-      console.error('Users fetch error', err)
+      console.error('Teams fetch error', err)
     }
   }
 
@@ -29,7 +29,7 @@ export default function Users() {
   return (
     <div className="container py-4 app-container">
       <div className="app-header d-flex align-items-center">
-        <h2 className="me-3">Users</h2>
+        <h2 className="me-3">Teams</h2>
         <button className="btn btn-primary btn-sm refresh-btn" onClick={fetchData}>Refresh</button>
       </div>
 
@@ -40,17 +40,17 @@ export default function Users() {
               <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Email</th>
+                <th>Members</th>
                 <th>Created</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((u) => (
-                <tr key={u.id}>
-                  <td>{u.id}</td>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.created_at || '-'}</td>
+              {items.map((t) => (
+                <tr key={t.id}>
+                  <td>{t.id}</td>
+                  <td>{t.name}</td>
+                  <td>{(t.members && t.members.length) || '-'}</td>
+                  <td>{t.created_at || '-'}</td>
                 </tr>
               ))}
             </tbody>
