@@ -1,0 +1,17 @@
+.app-container {
+  padding-top: 1rem;
+}
+
+.app-header {
+  margin-bottom: 1rem;
+}
+
+.table-card {
+  margin-top: 1rem;
+}
+
+.refresh-btn {
+  margin-left: 0.5rem;
+}
+
+.navbar-brand { font-weight: 600; }
